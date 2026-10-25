@@ -1,8 +1,8 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: ["v*"]
 
 permissions:
   contents: write
@@ -18,7 +18,7 @@ jobs:
           jq --arg v "$VERSION" '.version = $v' module.json > module.tmp && mv module.tmp module.json
       - name: Zip bauen
         run: zip -r risky-die.zip module.json scripts styles lang README.md
-      - name: An das Release hängen
+      - name: Release anlegen
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" module.json risky-die.zip --clobber
+        run: gh release create "$GITHUB_REF_NAME" module.json risky-die.zip --title "$GITHUB_REF_NAME" --generate-notes
