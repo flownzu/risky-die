@@ -42,8 +42,8 @@
         "Hint": "Nach einem riskanten Wurf wird der Schalter automatisch zurückgesetzt. Aus: bleibt aktiv, bis du ihn abschaltest."
       },
       "ShowButton": {
-        "Name": "Schaltfläche anzeigen",
-        "Hint": "Zeigt die Schaltfläche für den riskanten W20 über der Spielerliste."
+        "Name": "Leiste anzeigen",
+        "Hint": "Zeigt die Leiste für den riskanten W20 über der Spielerliste. Als GM stellst du dort auch die Anzahl der Einsen und Zwanzigen ein."
       }
     }
   }

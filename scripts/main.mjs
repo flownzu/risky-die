@@ -158,13 +158,19 @@ function onBlocked() {
 /*  Interface                                   */
 /* -------------------------------------------- */
 
+let panel = null;
 let button = null;
+let slider = null;
+let countText = null;
 
 function countLabel(count) {
   return game.i18n.format("RISKYDIE.CountLabel", { count, chance: extremeChance(count) });
 }
 
-function createButton() {
+function createPanel() {
+  panel = document.createElement("div");
+  panel.id = "risky-die-panel";
+
   button = document.createElement("button");
   button.type = "button";
   button.id = "risky-die-button";
@@ -176,20 +182,43 @@ function createButton() {
     else toggle();
   });
 
+  // Count row: GMs get a slider, players only see the current value.
+  const row = document.createElement("div");
+  row.classList.add("risky-die-count");
+  if ( game.user.isGM ) {
+    slider = document.createElement("input");
+    slider.type = "range";
+    slider.min = String(MIN_COUNT);
+    slider.max = String(MAX_COUNT);
+    slider.step = "1";
+    slider.ariaLabel = game.i18n.localize("RISKYDIE.Settings.Count.Name");
+    slider.addEventListener("input", () => updateCountText(Number(slider.value)));
+    slider.addEventListener("change", () => game.settings.set(MODULE_ID, "count", clampCount(slider.value)));
+    row.append(slider);
+  }
+  countText = document.createElement("span");
+  row.append(countText);
+  panel.append(button, row);
+
   const players = document.getElementById("players");
-  if ( players?.parentElement ) players.parentElement.insertBefore(button, players);
+  if ( players?.parentElement ) players.parentElement.insertBefore(panel, players);
   else {
-    button.classList.add("floating");
-    document.body.append(button);
+    panel.classList.add("floating");
+    document.body.append(panel);
   }
   refreshButton();
 }
 
+function updateCountText(count) {
+  countText.textContent = countLabel(count);
+  countText.dataset.tooltip = faceList(count).join(" · ");
+}
+
 function refreshButton() {
-  if ( !button ) return;
+  if ( !panel ) return;
   const availability = setting("availability");
   const hidden = !setting("showButton") || ((availability === "off") && !game.user.isGM);
-  button.hidden = hidden;
+  panel.hidden = hidden;
   if ( hidden ) return;
 
   const count = clampCount(setting("count"));
@@ -207,9 +236,12 @@ function refreshButton() {
   button.disabled = !available && !gmUnlockMode;
   button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> <span>${game.i18n.localize(label)}</span>`;
 
-  const tooltip = [countLabel(count), faceList(count).join(" · "), game.i18n.localize("RISKYDIE.Button.Rules")];
+  const tooltip = [game.i18n.localize("RISKYDIE.Button.Rules")];
   if ( gmUnlockMode ) tooltip.push(game.i18n.localize("RISKYDIE.Button.GMHint"));
   button.dataset.tooltip = tooltip.join("<br>");
+
+  if ( slider ) slider.value = String(count);
+  updateCountText(count);
 }
 
 function annotateChatMessage(message, html) {
@@ -247,6 +279,6 @@ Hooks.once("init", () => {
   };
 });
 
-Hooks.once("ready", () => createButton());
+Hooks.once("ready", () => createPanel());
 
 Hooks.on("renderChatMessageHTML", annotateChatMessage);

@@ -1,24 +1,35 @@
-#risky-die-button {
+#risky-die-panel {
   display: flex;
-  align-items: center;
-  gap: 0.4em;
+  flex-direction: column;
+  gap: 4px;
   width: max-content;
   margin: 0 0 6px 0;
-  padding: 4px 10px;
-  font-size: var(--font-size-13, 13px);
+  padding: 6px 8px;
   pointer-events: all;
   border-radius: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-#risky-die-button[hidden] {
+#risky-die-panel[hidden] {
   display: none;
 }
 
-#risky-die-button.floating {
+#risky-die-panel.floating {
   position: fixed;
   left: 15px;
   bottom: 140px;
   z-index: 70;
+}
+
+#risky-die-button {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  width: 100%;
+  padding: 4px 10px;
+  font-size: var(--font-size-13, 13px);
+  border-radius: 6px;
 }
 
 #risky-die-button:disabled {
@@ -31,6 +42,19 @@
   border-color: #ff6a3d;
   color: #fff;
   box-shadow: 0 0 8px #ff6a3d;
+}
+
+#risky-die-panel .risky-die-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-12, 12px);
+  color: var(--color-text-light-highlight, #f0f0e0);
+}
+
+#risky-die-panel .risky-die-count input[type="range"] {
+  width: 90px;
+  margin: 0;
 }
 
 .risky-die-badge {

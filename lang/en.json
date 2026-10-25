@@ -42,8 +42,8 @@
         "Hint": "The toggle resets automatically after one risky roll. Off: stays active until you turn it off."
       },
       "ShowButton": {
-        "Name": "Show button",
-        "Hint": "Shows the risky d20 button above the player list."
+        "Name": "Show panel",
+        "Hint": "Shows the risky d20 panel above the player list. As GM you can also set the number of ones and twenties there."
       }
     }
   }

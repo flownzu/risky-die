@@ -15,6 +15,7 @@ The interface is available in English and German.
 ## Usage
 
 - A **"Risky d20"** button appears above the player list (bottom left). One click arms it; the next d20 roll is risky. Afterwards it resets (can be turned off).
+- Below the button the panel shows the current count and the chance of a 1 and a 20. The GM gets a slider there to change the count directly; players see the value only. The same value is also in the module settings.
 - A risky roll gets a note in the chat, so the table can see which die was used.
 - An optional keybinding is available (Settings → Controls → "Arm / cancel risky d20").
 
