@@ -24,7 +24,12 @@ Der Durchschnitt bleibt immer 10,5. Der Würfel ist nicht besser, nur riskanter.
 
 ### Welche Würfe
 
-Standardmäßig nur die W20-Proben des dnd5e-Systems (abgeglichen mit dem Quellcode von dnd5e 5.3 und 6.0, im Spiel noch nicht getestet): Angriffe, Attributs- und Fertigkeitsproben, Rettungswürfe. Vorteil, Nachteil und Halfling Lucky funktionieren normal; jeder einzelne W20 wird riskant gewürfelt. Kritische Treffer und Patzer erkennt dnd5e wie gewohnt.
+Standardmäßig nur die W20-Proben des dnd5e-Systems (abgeglichen mit dem Quellcode von dnd5e 5.3 und 6.0, im Spiel noch nicht getestet): Angriffe, Attributs- und Fertigkeitsproben, Rettungswürfe. Kritische Treffer und Patzer erkennt dnd5e wie gewohnt.
+
+Zwei Einschränkungen, damit der Würfel nicht zu stark wird:
+
+- **Nicht mit Vorteil oder Nachteil.** Kommt ein Wurf mit Vorteil oder Nachteil (auch Elven Accuracy, `2d20kh`), wird er normal gewürfelt. Der riskante W20 bleibt scharf für den nächsten passenden Wurf, und der Spieler bekommt einen Hinweis.
+- **Keine Nachwürfe.** Nachwurf-Modifikatoren wie Halfling Lucky (`r1=1`) werden beim riskanten W20 entfernt. Ein Feat wie Lucky aus den 2014-Regeln, bei dem der Spieler von Hand einen weiteren W20 wirft, kann die Mod nicht verhindern; der Chat-Hinweis zeigt dem GM aber, dass der Wurf riskant war. Lucky aus den 2024-Regeln gibt Vorteil und fällt damit unter die erste Regel.
 
 Wird die Einstellung „Nur W20-Proben“ abgeschaltet, gilt der riskante Würfel für jeden W20, auch `/r 1d20`.
 
@@ -67,4 +72,5 @@ Die Würfellogik (`scripts/mapping.mjs`) und die Patches (`scripts/core.mjs`) si
 
 - Die Prüfung, ob ein Spieler riskant würfeln darf, läuft im Browser des Spielers. Für einen Tisch unter Freunden reicht das; der Chat-Hinweis macht jeden riskanten Wurf sichtbar.
 - Die Freigabe gilt für alle Spieler gemeinsam, nicht pro Charakter.
+- Ob ein Wurf Vorteil hat, erkennt die Mod an den Würfelmodifikatoren und an der dnd5e-Wurfoption. Andere Systeme, die Vorteil anders abbilden, werden nicht erkannt.
 - Dice So Nice zeigt einen normalen W20 mit dem abgebildeten Ergebnis, keine eigenen Seiten mit zwei 20ern.

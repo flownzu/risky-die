@@ -145,8 +145,13 @@ function decide() {
   return clampCount(setting("count"));
 }
 
-function onApplied() {
+function onApplied(roll, { rerollsRemoved }) {
+  if ( rerollsRemoved.length ) ui.notifications.info(game.i18n.localize("RISKYDIE.Notify.RerollsRemoved"));
   if ( setting("once") ) disarm();
+}
+
+function onBlocked() {
+  ui.notifications.warn(game.i18n.localize("RISKYDIE.Notify.Advantage"));
 }
 
 /* -------------------------------------------- */
@@ -202,7 +207,7 @@ function refreshButton() {
   button.disabled = !available && !gmUnlockMode;
   button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> <span>${game.i18n.localize(label)}</span>`;
 
-  const tooltip = [countLabel(count), faceList(count).join(" · ")];
+  const tooltip = [countLabel(count), faceList(count).join(" · "), game.i18n.localize("RISKYDIE.Button.Rules")];
   if ( gmUnlockMode ) tooltip.push(game.i18n.localize("RISKYDIE.Button.GMHint"));
   button.dataset.tooltip = tooltip.join("<br>");
 }
@@ -233,7 +238,7 @@ function annotateChatMessage(message, html) {
 Hooks.once("init", () => {
   registerSettings();
   registerKeybindings();
-  installPatches({ Roll: foundry.dice.Roll, Die: foundry.dice.terms.Die, isEligible, decide, onApplied });
+  installPatches({ Roll: foundry.dice.Roll, Die: foundry.dice.terms.Die, isEligible, decide, onApplied, onBlocked });
   game.modules.get(MODULE_ID).api = {
     arm, disarm, toggle, setUnlocked, mapFace, faceList,
     get armed() { return armed; },

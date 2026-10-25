@@ -7,7 +7,7 @@ import { OPTION_KEY, installPatches, riskyCount } from "../scripts/core.mjs";
 function makeFoundry(sequence) {
   let i = 0;
   class Die {
-    constructor(faces, number = 1, extra = 0) { this.faces = faces; this.number = number; this.extra = extra; this.options = {}; this.results = []; }
+    constructor(faces, number = 1, extra = 0) { this.faces = faces; this.number = number; this.extra = extra; this.options = {}; this.modifiers = []; this.results = []; }
     async roll() { const r = { result: sequence[i++ % sequence.length], active: true }; this.results.push(r); return r; }
     // nachgebildeter Vorteil: würfelt intern erneut über roll()
     async evaluate() { for ( let n = 0; n < this.number + this.extra; n++ ) await this.roll(); }
@@ -64,5 +64,37 @@ test("onApplied genau einmal pro riskantem Wurf, decide nur bei passendem Würfe
   await new Roll([new Die(8)]).evaluate();
   assert.equal(applied, 1);
   assert.equal(asked, 1);
+  patches.uninstall();
+});
+
+test("Vorteil/Nachteil: Wurf bleibt normal, onBlocked statt onApplied", async () => {
+  const { Die, Roll } = makeFoundry([2, 19]);
+  let applied = 0, blocked = 0;
+  const patches = installPatches({ Roll, Die, isEligible: d => d.faces === 20, decide: () => 2,
+    onApplied: () => applied++, onBlocked: () => blocked++ });
+  const adv = new Die(20, 2); adv.modifiers = ["kh"];
+  await new Roll([adv]).evaluate();
+  assert.deepEqual(adv.results.map(r => r.result), [2, 19]);
+  assert.equal(riskyCount(adv), null);
+
+  const dnd = new Die(20); dnd.modifiers = ["adv"];
+  await new Roll([dnd]).evaluate();
+  const viaOption = new Die(20); const roll = new Roll([viaOption]); roll.options = { advantageMode: -1 };
+  await roll.evaluate();
+  assert.equal(riskyCount(dnd), null);
+  assert.equal(riskyCount(viaOption), null);
+  assert.equal(blocked, 3);
+  assert.equal(applied, 0);
+  patches.uninstall();
+});
+
+test("Nachwürfe werden entfernt, andere Modifikatoren bleiben", async () => {
+  const { Die, Roll } = makeFoundry([2]);
+  let info = null;
+  const patches = installPatches({ Roll, Die, isEligible: () => true, decide: () => 2, onApplied: (r, i) => { info = i; } });
+  const d20 = new Die(20); d20.modifiers = ["r1=1", "min10", "rr<3", "cs>=19"];
+  await new Roll([d20]).evaluate();
+  assert.deepEqual(d20.modifiers, ["min10", "cs>=19"]);
+  assert.deepEqual(info.rerollsRemoved, ["r1=1", "rr<3"]);
   patches.uninstall();
 });

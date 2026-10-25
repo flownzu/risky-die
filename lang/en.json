@@ -8,12 +8,15 @@
       "Unavailable": "Risky d20 locked",
       "GMLocked": "Risky d20: locked",
       "GMUnlocked": "Risky d20: unlocked",
-      "GMHint": "Click: toggle access for players. Shift+click: roll risky yourself."
+      "GMHint": "Click: toggle access for players. Shift+click: roll risky yourself.",
+      "Rules": "Not with advantage/disadvantage. No rerolls (e.g. Halfling Lucky)."
     },
     "Notify": {
       "NotAvailable": "The risky d20 is not unlocked right now.",
       "Unlocked": "The GM has unlocked the risky d20.",
-      "Locked": "The GM has locked the risky d20 again."
+      "Locked": "The GM has locked the risky d20 again.",
+      "Advantage": "The risky d20 can't be used with advantage or disadvantage. The roll was made normally, the risky d20 stays armed.",
+      "RerollsRemoved": "Rerolls (e.g. Halfling Lucky) don't apply to the risky d20."
     },
     "Keybinding": {
       "Toggle": "Arm / cancel risky d20"

@@ -8,12 +8,15 @@
       "Unavailable": "Riskanter W20 gesperrt",
       "GMLocked": "Riskanter W20: gesperrt",
       "GMUnlocked": "Riskanter W20: freigegeben",
-      "GMHint": "Klick: Freigabe für die Spieler umschalten. Shift+Klick: selbst riskant würfeln."
+      "GMHint": "Klick: Freigabe für die Spieler umschalten. Shift+Klick: selbst riskant würfeln.",
+      "Rules": "Nicht mit Vorteil/Nachteil. Keine Nachwürfe (z. B. Halfling Lucky)."
     },
     "Notify": {
       "NotAvailable": "Der riskante W20 ist gerade nicht freigegeben.",
       "Unlocked": "Der GM hat den riskanten W20 freigegeben.",
-      "Locked": "Der GM hat den riskanten W20 wieder gesperrt."
+      "Locked": "Der GM hat den riskanten W20 wieder gesperrt.",
+      "Advantage": "Riskanter W20 geht nicht mit Vorteil oder Nachteil. Der Wurf wurde normal gewürfelt, der riskante W20 bleibt bereit.",
+      "RerollsRemoved": "Nachwürfe (z. B. Halfling Lucky) gelten nicht für den riskanten W20."
     },
     "Keybinding": {
       "Toggle": "Riskanten W20 scharf schalten / abbrechen"
