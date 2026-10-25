@@ -3,6 +3,11 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version ohne v, z. B. 0.1.0"
+        required: true
 
 permissions:
   contents: write
@@ -10,15 +15,17 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - name: Version aus dem Tag in module.json setzen
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${TAG#v}"
           jq --arg v "$VERSION" '.version = $v' module.json > module.tmp && mv module.tmp module.json
       - name: Zip bauen
         run: zip -r risky-die.zip module.json scripts styles lang README.md
       - name: Release anlegen
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" module.json risky-die.zip --title "$GITHUB_REF_NAME" --generate-notes
+        run: gh release create "$TAG" module.json risky-die.zip --title "$TAG" --target "$GITHUB_SHA" --generate-notes

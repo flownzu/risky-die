@@ -51,7 +51,7 @@ api.faceList(3);        // [1, 1, 1, 4, …, 17, 20, 20, 20]
 https://github.com/flownzu/risky-die/releases/latest/download/module.json
 ```
 
-Ein Release entsteht, wenn ein Tag wie `v0.1.0` gepusht wird (`git tag v0.1.0 && git push origin v0.1.0`). Der Workflow `release.yml` baut dann `module.json` und `risky-die.zip` und legt das Release an.
+Ein Release entsteht, wenn ein Tag wie `v0.1.0` gepusht wird (`git tag v0.1.0 && git push origin v0.1.0`) oder der Workflow „Release“ auf GitHub unter Actions mit einer Version von Hand gestartet wird. Der Workflow `release.yml` baut dann `module.json` und `risky-die.zip` und legt das Release an.
 
 **Zum Testen ohne Release:** den Ordner nach `Data/modules/risky-die/` kopieren und die Mod in der Welt aktivieren.
 
