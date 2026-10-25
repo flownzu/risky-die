@@ -41,16 +41,18 @@ If the "Only d20 tests" setting is turned off, the risky die applies to every d2
 
 The die is rolled normally. The result is then mapped onto the risky faces: with count 2, a 2 becomes a 1 and a 19 becomes a 20. Since every face is equally likely, this is exactly the same as rolling the relabelled die. It also works for Dice So Nice and manually entered rolls. Dice So Nice shows the mapped result.
 
-A small API is available for macros:
+For macros the module provides the global `RiskyDie`:
 
 ```js
-const api = game.modules.get("risky-die").api;
-api.enable(game.users.getName("Christopher"));  // GM only: risky d20 for a player's next d20 test
-api.disable(user);
-api.toggle(user);
-api.isEnabled(user);
-api.faceList(3);        // [1, 1, 1, 4, …, 17, 20, 20, 20]
+const user = game.users.getName("Christopher");
+RiskyDie.enable(user);     // GM only: the player's next d20 test is risky
+RiskyDie.disable(user);
+RiskyDie.toggle(user);
+RiskyDie.isEnabled(user);
+RiskyDie.faceList(3);      // [1, 1, 1, 4, …, 17, 20, 20, 20]
 ```
+
+Without an argument, `enable`, `disable` and `toggle` use the player selected in the GM panel.
 
 ## Installation
 

@@ -1,5 +1,5 @@
-import { MAX_COUNT, MIN_COUNT, clampCount, extremeChance, faceList, mapFace } from "./mapping.mjs";
-import { OPTION_KEY, installPatches, riskyCount } from "./core.mjs";
+import { MAX_COUNT, MIN_COUNT, clampCount, extremeChance, faceList } from "./mapping.mjs";
+import { installPatches, riskyCount } from "./core.mjs";
 
 const MODULE_ID = "risky-die";
 
@@ -249,11 +249,8 @@ Hooks.once("init", () => {
   registerSettings();
   registerKeybindings();
   installPatches({ Roll: foundry.dice.Roll, Die: foundry.dice.terms.Die, isEligible, decide, onApplied, onBlocked });
-  game.modules.get(MODULE_ID).api = {
-    enable, disable, toggle, isEnabled, mapFace, faceList,
-    get enabled() { return isEnabled(game.user); },
-    OPTION_KEY
-  };
+  // Global for macros, e.g. RiskyDie.enable(game.users.getName("Christopher")).
+  globalThis.RiskyDie = { enable, disable, toggle, isEnabled, faceList };
 });
 
 Hooks.once("ready", () => createPanel());
