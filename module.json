@@ -1,8 +1,8 @@
 {
   "id": "risky-die",
   "title": "Risky Die",
-  "description": "Spieler können einen riskanten W20 wählen, der mehr Einsen und mehr Zwanzigen hat. Die Anzahl ist einstellbar, der GM kann ihn freigeben oder sperren.",
-  "version": "0.2.0",
+  "description": "Players can choose a risky d20 with more ones and more twenties. The count is configurable, and the GM can unlock or lock it.",
+  "version": "0.2.1",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

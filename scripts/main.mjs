@@ -3,11 +3,11 @@ import { OPTION_KEY, installPatches, riskyCount } from "./core.mjs";
 
 const MODULE_ID = "risky-die";
 
-/** Ist der riskante Würfel für den nächsten Wurf dieses Clients scharf geschaltet? */
+/** Is the risky die armed for this client's next roll? */
 let armed = false;
 
 /* -------------------------------------------- */
-/*  Einstellungen                               */
+/*  Settings                                    */
 /* -------------------------------------------- */
 
 const setting = key => game.settings.get(MODULE_ID, key);
@@ -39,7 +39,7 @@ function registerSettings() {
     onChange: () => { if ( !isAvailable() ) disarm(); refreshButton(); }
   });
 
-  // Freigabe durch den GM, nur relevant bei availability = "unlock".
+  // GM unlock, only relevant when availability = "unlock".
   game.settings.register(MODULE_ID, "unlocked", {
     scope: "world",
     config: false,
@@ -92,7 +92,7 @@ function registerKeybindings() {
 }
 
 /* -------------------------------------------- */
-/*  Zustand                                     */
+/*  State                                       */
 /* -------------------------------------------- */
 
 function isAvailable() {
@@ -129,7 +129,7 @@ async function setUnlocked(value) {
 }
 
 /* -------------------------------------------- */
-/*  Würfel-Patches                              */
+/*  Dice patches                                */
 /* -------------------------------------------- */
 
 function isEligible(term) {
@@ -155,7 +155,7 @@ function onBlocked() {
 }
 
 /* -------------------------------------------- */
-/*  Oberfläche                                  */
+/*  Interface                                   */
 /* -------------------------------------------- */
 
 let button = null;

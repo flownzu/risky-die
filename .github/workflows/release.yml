@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version ohne v, z. B. 0.1.0"
+        description: "Version without v, e.g. 0.1.0"
         required: true
 
 permissions:
@@ -19,13 +19,13 @@ jobs:
       TAG: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
-      - name: Version aus dem Tag in module.json setzen
+      - name: Set version in module.json from the tag
         run: |
           VERSION="${TAG#v}"
           jq --arg v "$VERSION" '.version = $v' module.json > module.tmp && mv module.tmp module.json
-      - name: Zip bauen
+      - name: Build zip
         run: zip -r risky-die.zip module.json scripts styles lang README.md
-      - name: Release anlegen
+      - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$TAG" module.json risky-die.zip --title "$TAG" --target "$GITHUB_SHA" --generate-notes

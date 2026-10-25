@@ -1,10 +1,10 @@
 /**
- * Reine Würfellogik ohne Foundry-Abhängigkeiten.
+ * Pure dice logic without Foundry dependencies.
  *
- * Ein riskanter W20 mit `count` Einsen und `count` Zwanzigen hat diese Seiten:
+ * A risky d20 with `count` ones and `count` twenties has these faces:
  *   count = 2:  1, 1, 3, 4, …, 18, 20, 20
  *   count = 3:  1, 1, 1, 4, …, 17, 20, 20, 20
- * Die Seiten direkt neben 1 und 20 fallen jeweils weg.
+ * The faces next to 1 and 20 are removed.
  */
 
 export const FACES = 20;
@@ -12,7 +12,7 @@ export const MIN_COUNT = 2;
 export const MAX_COUNT = 10;
 
 /**
- * Begrenzt die eingestellte Anzahl auf den gültigen Bereich.
+ * Clamps the configured count to the valid range.
  * @param {number} count
  * @returns {number}
  */
@@ -23,12 +23,11 @@ export function clampCount(count) {
 }
 
 /**
- * Bildet das Ergebnis eines normalen W20 auf die Seite des riskanten W20 ab.
- * Weil die Seite gleichverteilt gewählt wird, ist das dasselbe wie ein Wurf mit dem
- * umbeschrifteten Würfel – egal ob das Ergebnis digital, von Dice So Nice oder von
- * einem echten Würfel kommt.
- * @param {number} result  Ergebnis 1–20
- * @param {number} count   Anzahl Einsen bzw. Zwanzigen
+ * Maps the result of a normal d20 onto the face of the risky d20.
+ * Since the face is picked uniformly, this is the same as rolling the relabelled die,
+ * whether the result is digital, from Dice So Nice or from a physical die.
+ * @param {number} result  Result 1–20
+ * @param {number} count   Number of ones and twenties
  * @returns {number}
  */
 export function mapFace(result, count) {
@@ -39,7 +38,7 @@ export function mapFace(result, count) {
 }
 
 /**
- * Die Seiten des riskanten W20, aufsteigend.
+ * The faces of the risky d20, ascending.
  * @param {number} count
  * @returns {number[]}
  */
@@ -48,7 +47,7 @@ export function faceList(count) {
 }
 
 /**
- * Wahrscheinlichkeit für eine natürliche 1 bzw. 20 in Prozent.
+ * Chance of a natural 1 (or 20) in percent.
  * @param {number} count
  * @returns {number}
  */

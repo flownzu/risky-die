@@ -1,76 +1,78 @@
 # Risky Die
 
-Foundry-VTT-Mod (v14, läuft auch auf v13): Spieler können für einen Wurf einen **riskanten W20** wählen. Er hat mehr Einsen und mehr Zwanzigen, dafür fehlen die Seiten daneben.
+Foundry VTT module (v14, also runs on v13): players can choose a **risky d20** for a roll. It has more ones and more twenties; the faces next to them are removed.
 
-| Einstellung „Anzahl“ | Seiten | Chance auf 1 / 20 |
+| "Count" setting | Faces | Chance of 1 / 20 |
 |---|---|---|
-| 2 (Standard) | 1, 1, 3 … 18, 20, 20 | je 10 % |
-| 3 | 1, 1, 1, 4 … 17, 20, 20, 20 | je 15 % |
-| 10 | zehnmal 1, zehnmal 20 | je 50 % |
+| 2 (default) | 1, 1, 3 … 18, 20, 20 | 10% each |
+| 3 | 1, 1, 1, 4 … 17, 20, 20, 20 | 15% each |
+| 10 | ten 1s, ten 20s | 50% each |
 
-Der Durchschnitt bleibt immer 10,5. Der Würfel ist nicht besser, nur riskanter.
+The average always stays 10.5. The die is not better, just riskier.
 
-## Bedienung
+The interface is available in English and German.
 
-- Über der Spielerliste (unten links) erscheint die Schaltfläche **„Riskanter W20“**. Ein Klick schaltet sie scharf, der nächste W20-Wurf ist riskant. Danach setzt sie sich zurück (abschaltbar).
-- Ein riskanter Wurf bekommt im Chat einen Hinweis, damit der Tisch sieht, womit gewürfelt wurde.
-- Optional gibt es ein Tastenkürzel (Einstellungen → Steuerung → „Riskanten W20 scharf schalten“).
+## Usage
 
-### Verfügbarkeit (GM-Einstellung)
+- A **"Risky d20"** button appears above the player list (bottom left). One click arms it; the next d20 roll is risky. Afterwards it resets (can be turned off).
+- A risky roll gets a note in the chat, so the table can see which die was used.
+- An optional keybinding is available (Settings → Controls → "Arm / cancel risky d20").
 
-- **Nur wenn der GM ihn freigibt** (Standard): Der GM schaltet über dieselbe Schaltfläche die Freigabe an oder aus, etwa für eine bestimmte Szene. Shift+Klick lässt den GM selbst riskant würfeln.
-- **Immer**: Spieler können ihn jederzeit wählen.
-- **Nie**: Mod ist praktisch aus.
+### Availability (GM setting)
 
-### Welche Würfe
+- **Only when the GM unlocks it** (default): the GM toggles access with the same button, for example for a specific scene. Shift+click lets the GM roll risky themselves.
+- **Always**: players can choose it at any time.
+- **Never**: the module is effectively off.
 
-Standardmäßig nur die W20-Proben des dnd5e-Systems (abgeglichen mit dem Quellcode von dnd5e 5.3 und 6.0, im Spiel noch nicht getestet): Angriffe, Attributs- und Fertigkeitsproben, Rettungswürfe. Kritische Treffer und Patzer erkennt dnd5e wie gewohnt.
+### Which rolls
 
-Zwei Einschränkungen, damit der Würfel nicht zu stark wird:
+By default only d20 tests of the dnd5e system: attacks, ability checks, skill checks and saving throws (checked against the source code of dnd5e 5.3 and 6.0, not yet tested in play). dnd5e detects critical hits and fumbles as usual.
 
-- **Nicht mit Vorteil oder Nachteil.** Kommt ein Wurf mit Vorteil oder Nachteil (auch Elven Accuracy, `2d20kh`), wird er normal gewürfelt. Der riskante W20 bleibt scharf für den nächsten passenden Wurf, und der Spieler bekommt einen Hinweis.
-- **Keine Nachwürfe.** Nachwurf-Modifikatoren wie Halfling Lucky (`r1=1`) werden beim riskanten W20 entfernt. Ein Feat wie Lucky aus den 2014-Regeln, bei dem der Spieler von Hand einen weiteren W20 wirft, kann die Mod nicht verhindern; der Chat-Hinweis zeigt dem GM aber, dass der Wurf riskant war. Lucky aus den 2024-Regeln gibt Vorteil und fällt damit unter die erste Regel.
+Two restrictions keep the die from being too strong:
 
-Wird die Einstellung „Nur W20-Proben“ abgeschaltet, gilt der riskante Würfel für jeden W20, auch `/r 1d20`.
+- **No advantage or disadvantage.** A roll with advantage or disadvantage (including Elven Accuracy and `2d20kh`) is rolled normally. The risky d20 stays armed for the next eligible roll, and the player gets a notification.
+- **No rerolls.** Reroll modifiers such as Halfling Lucky (`r1=1`) are removed from a risky d20. A feat like the 2014 Lucky, where the player rolls another d20 by hand, cannot be prevented by the module; the chat note still shows the GM that the roll was risky. The 2024 Lucky grants advantage and is covered by the first rule.
 
-## Wie es funktioniert
+If the "Only d20 tests" setting is turned off, the risky die applies to every d20, including `/r 1d20`.
 
-Der Würfel wird normal geworfen. Das Ergebnis wird dann auf die riskanten Seiten abgebildet: Bei Anzahl 2 wird aus einer 2 eine 1 und aus einer 19 eine 20. Weil jede Seite gleich wahrscheinlich ist, entspricht das genau einem Wurf mit dem umbeschrifteten Würfel. Das gilt auch für Dice So Nice und manuell eingegebene Würfe. Dice So Nice zeigt das abgebildete Ergebnis.
+## How it works
 
-Für Makros gibt es eine kleine API:
+The die is rolled normally. The result is then mapped onto the risky faces: with count 2, a 2 becomes a 1 and a 19 becomes a 20. Since every face is equally likely, this is exactly the same as rolling the relabelled die. It also works for Dice So Nice and manually entered rolls. Dice So Nice shows the mapped result.
+
+A small API is available for macros:
 
 ```js
 const api = game.modules.get("risky-die").api;
-api.arm();              // nächsten W20 riskant würfeln
+api.arm();              // roll the next d20 risky
 api.disarm();
 api.toggle();
-api.setUnlocked(true);  // nur GM: Freigabe setzen
+api.setUnlocked(true);  // GM only: set access
 api.faceList(3);        // [1, 1, 1, 4, …, 17, 20, 20, 20]
 ```
 
 ## Installation
 
-**Manifest-URL** (nach dem ersten GitHub-Release):
+**Manifest URL:**
 
 ```
 https://github.com/flownzu/risky-die/releases/latest/download/module.json
 ```
 
-Ein Release entsteht, wenn ein Tag wie `v0.1.0` gepusht wird (`git tag v0.1.0 && git push origin v0.1.0`) oder der Workflow „Release“ auf GitHub unter Actions mit einer Version von Hand gestartet wird. Der Workflow `release.yml` baut dann `module.json` und `risky-die.zip` und legt das Release an.
+A release is created when a tag like `v0.1.0` is pushed (`git tag v0.1.0 && git push origin v0.1.0`), or when the "Release" workflow is started by hand under Actions on GitHub with a version. The `release.yml` workflow then builds `module.json` and `risky-die.zip` and creates the release.
 
-**Zum Testen ohne Release:** den Ordner nach `Data/modules/risky-die/` kopieren und die Mod in der Welt aktivieren.
+**For testing without a release:** copy the folder to `Data/modules/risky-die/` and enable the module in the world.
 
-## Entwicklung
+## Development
 
 ```
 npm test
 ```
 
-Die Würfellogik (`scripts/mapping.mjs`) und die Patches (`scripts/core.mjs`) sind ohne Foundry testbar. `scripts/main.mjs` verbindet sie mit Einstellungen, Schaltfläche und Chat.
+The dice logic (`scripts/mapping.mjs`) and the patches (`scripts/core.mjs`) can be tested without Foundry. `scripts/main.mjs` connects them to settings, button and chat.
 
-## Bekannte Grenzen des Prototyps
+## Known limitations of the prototype
 
-- Die Prüfung, ob ein Spieler riskant würfeln darf, läuft im Browser des Spielers. Für einen Tisch unter Freunden reicht das; der Chat-Hinweis macht jeden riskanten Wurf sichtbar.
-- Die Freigabe gilt für alle Spieler gemeinsam, nicht pro Charakter.
-- Ob ein Wurf Vorteil hat, erkennt die Mod an den Würfelmodifikatoren und an der dnd5e-Wurfoption. Andere Systeme, die Vorteil anders abbilden, werden nicht erkannt.
-- Dice So Nice zeigt einen normalen W20 mit dem abgebildeten Ergebnis, keine eigenen Seiten mit zwei 20ern.
+- The check whether a player may roll risky runs in the player's browser. That is enough for a table among friends; the chat note makes every risky roll visible.
+- Access applies to all players together, not per character.
+- Advantage is detected from the dice modifiers and the dnd5e roll option. Other systems that model advantage differently are not detected.
+- Dice So Nice shows a normal d20 with the mapped result, not custom faces with two 20s.

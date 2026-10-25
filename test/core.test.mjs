@@ -2,14 +2,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { OPTION_KEY, installPatches, riskyCount } from "../scripts/core.mjs";
 
-// Minimale Nachbildung von Foundrys Die/Roll: Die#roll legt ein Ergebnis an und gibt es zurück,
-// Roll#evaluate würfelt alle Würfel. Ergebnisse kommen aus einer festen Folge.
+// Minimal stand-in for Foundry's Die/Roll: Die#roll creates a result and returns it,
+// Roll#evaluate rolls every die. Results come from a fixed sequence.
 function makeFoundry(sequence) {
   let i = 0;
   class Die {
     constructor(faces, number = 1, extra = 0) { this.faces = faces; this.number = number; this.extra = extra; this.options = {}; this.modifiers = []; this.results = []; }
     async roll() { const r = { result: sequence[i++ % sequence.length], active: true }; this.results.push(r); return r; }
-    // nachgebildeter Vorteil: würfelt intern erneut über roll()
+    // rolls `extra` additional times through roll(), like advantage does internally
     async evaluate() { for ( let n = 0; n < this.number + this.extra; n++ ) await this.roll(); }
   }
   class Roll {
@@ -19,7 +19,7 @@ function makeFoundry(sequence) {
   return { Die, Roll };
 }
 
-test("markierter W20 würfelt riskant, andere Würfel nicht", async () => {
+test("marked d20 rolls risky, other dice do not", async () => {
   const { Die, Roll } = makeFoundry([2, 19, 2, 5]);
   const patches = installPatches({ Roll, Die, isEligible: d => d.faces === 20, decide: () => 2 });
   const d20 = new Die(20), d6 = new Die(6), second = new Die(20);
@@ -32,7 +32,7 @@ test("markierter W20 würfelt riskant, andere Würfel nicht", async () => {
   patches.uninstall();
 });
 
-test("Vorteil: jeder Einzelwurf wird abgebildet", async () => {
+test("every single result of a marked die is mapped", async () => {
   const { Die, Roll } = makeFoundry([19, 3]);
   const patches = installPatches({ Roll, Die, isEligible: () => true, decide: () => 2 });
   const d20 = new Die(20, 1, 1);
@@ -41,7 +41,7 @@ test("Vorteil: jeder Einzelwurf wird abgebildet", async () => {
   patches.uninstall();
 });
 
-test("nicht scharf: normaler Wurf, onApplied wird nicht gerufen", async () => {
+test("not armed: normal roll, onApplied is not called", async () => {
   const { Die, Roll } = makeFoundry([2]);
   let applied = 0;
   const patches = installPatches({ Roll, Die, isEligible: () => true, decide: () => null, onApplied: () => applied++ });
@@ -53,7 +53,7 @@ test("nicht scharf: normaler Wurf, onApplied wird nicht gerufen", async () => {
   patches.uninstall();
 });
 
-test("onApplied genau einmal pro riskantem Wurf, decide nur bei passendem Würfel", async () => {
+test("onApplied once per risky roll, decide only for eligible dice", async () => {
   const { Die, Roll } = makeFoundry([10]);
   let applied = 0, asked = 0;
   const patches = installPatches({
@@ -67,7 +67,7 @@ test("onApplied genau einmal pro riskantem Wurf, decide nur bei passendem Würfe
   patches.uninstall();
 });
 
-test("Vorteil/Nachteil: Wurf bleibt normal, onBlocked statt onApplied", async () => {
+test("advantage/disadvantage: roll stays normal, onBlocked instead of onApplied", async () => {
   const { Die, Roll } = makeFoundry([2, 19]);
   let applied = 0, blocked = 0;
   const patches = installPatches({ Roll, Die, isEligible: d => d.faces === 20, decide: () => 2,
@@ -88,7 +88,7 @@ test("Vorteil/Nachteil: Wurf bleibt normal, onBlocked statt onApplied", async ()
   patches.uninstall();
 });
 
-test("Nachwürfe werden entfernt, andere Modifikatoren bleiben", async () => {
+test("rerolls are removed, other modifiers stay", async () => {
   const { Die, Roll } = makeFoundry([2]);
   let info = null;
   const patches = installPatches({ Roll, Die, isEligible: () => true, decide: () => 2, onApplied: (r, i) => { info = i; } });

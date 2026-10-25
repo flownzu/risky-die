@@ -1,10 +1,10 @@
 import { FACES, mapFace } from "./mapping.mjs";
 
-/** Schlüssel in `term.options`, mit dem ein Würfel als riskant markiert wird. */
+/** Key in `term.options` that marks a die as risky. */
 export const OPTION_KEY = "riskyDie";
 
 /**
- * Ist dieser Würfel als riskanter W20 markiert? Liefert die Anzahl Einsen/Zwanzigen.
+ * Is this die marked as a risky d20? Returns the number of ones/twenties.
  * @param {object} term
  * @returns {number|null}
  */
@@ -13,14 +13,14 @@ export function riskyCount(term) {
   return Number.isFinite(count) ? count : null;
 }
 
-/** Modifikatoren, die mehrere W20 werfen und einen behalten (Vorteil, Nachteil, kh, kl, dh, dl). */
+/** Modifiers that roll several d20s and keep one (advantage, disadvantage, kh, kl, dh, dl). */
 const MULTI_ROLL_MODIFIER = /^(adv|dis|k[hl]?|d[hl]?)(\d|$)/i;
 
-/** Nachwurf-Modifikatoren: r, rr (z. B. Halfling Lucky „r1=1“). */
+/** Reroll modifiers: r, rr (e.g. Halfling Lucky "r1=1"). */
 const REROLL_MODIFIER = /^rr?([<>=]|\d|$)/i;
 
 /**
- * Wird dieser W20 mit Vorteil oder Nachteil geworfen?
+ * Is this d20 rolled with advantage or disadvantage?
  * @param {object} term
  * @param {object} [roll]
  * @returns {boolean}
@@ -33,9 +33,9 @@ export function hasAdvantage(term, roll) {
 }
 
 /**
- * Entfernt Nachwurf-Modifikatoren von einem Würfel.
+ * Removes reroll modifiers from a die.
  * @param {object} term
- * @returns {string[]}  Die entfernten Modifikatoren
+ * @returns {string[]}  The removed modifiers
  */
 export function stripRerolls(term) {
   const removed = (term.modifiers ?? []).filter(m => REROLL_MODIFIER.test(m));
@@ -44,21 +44,20 @@ export function stripRerolls(term) {
 }
 
 /**
- * Patcht Foundrys Würfelklassen.
+ * Patches Foundry's dice classes.
  *
- * - `Roll#evaluate`: Bevor ein Wurf ausgewertet wird, fragt `decide(roll)`, ob der Wurf
- *   riskant sein soll. Wenn ja und kein passender W20 mit Vorteil/Nachteil geworfen wird,
- *   werden die W20 markiert und ihre Nachwurf-Modifikatoren entfernt. Mit Vorteil/Nachteil
- *   bleibt der ganze Wurf normal.
- * - `Die#roll`: Jedes Ergebnis eines markierten W20 wird auf die riskanten Seiten abgebildet.
+ * - `Roll#evaluate`: Before a roll is evaluated, `decide(roll)` says whether it should be risky.
+ *   If so and no eligible d20 is rolled with advantage/disadvantage, the d20s are marked and
+ *   their reroll modifiers removed. With advantage/disadvantage the whole roll stays normal.
+ * - `Die#roll`: Every result of a marked d20 is mapped onto the risky faces.
  *
  * @param {object} deps
  * @param {Function} deps.Roll           foundry.dice.Roll
  * @param {Function} deps.Die            foundry.dice.terms.Die
- * @param {(term: object) => boolean} deps.isEligible  Darf dieser Würfel riskant werden?
- * @param {(roll: object) => number|null} deps.decide  Anzahl Einsen/Zwanzigen oder null
- * @param {(roll: object, info: {rerollsRemoved: string[]}) => void} [deps.onApplied]  Nach einem riskanten Wurf
- * @param {(roll: object) => void} [deps.onBlocked]    Riskant gewünscht, aber Vorteil/Nachteil
+ * @param {(term: object) => boolean} deps.isEligible  May this die become risky?
+ * @param {(roll: object) => number|null} deps.decide  Number of ones/twenties, or null
+ * @param {(roll: object, info: {rerollsRemoved: string[]}) => void} [deps.onApplied]  After a risky roll
+ * @param {(roll: object) => void} [deps.onBlocked]    Risky requested, but advantage/disadvantage
  */
 export function installPatches({ Roll, Die, isEligible, decide, onApplied, onBlocked }) {
   const originalEvaluate = Roll.prototype.evaluate;
