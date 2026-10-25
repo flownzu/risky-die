@@ -1,6 +1,6 @@
 # Risky Die
 
-Foundry-VTT-Mod (v13): Spieler können für einen Wurf einen **riskanten W20** wählen. Er hat mehr Einsen und mehr Zwanzigen, dafür fehlen die Seiten daneben.
+Foundry-VTT-Mod (v14, läuft auch auf v13): Spieler können für einen Wurf einen **riskanten W20** wählen. Er hat mehr Einsen und mehr Zwanzigen, dafür fehlen die Seiten daneben.
 
 | Einstellung „Anzahl“ | Seiten | Chance auf 1 / 20 |
 |---|---|---|
@@ -24,7 +24,7 @@ Der Durchschnitt bleibt immer 10,5. Der Würfel ist nicht besser, nur riskanter.
 
 ### Welche Würfe
 
-Standardmäßig nur die W20-Proben des dnd5e-Systems: Angriffe, Attributs- und Fertigkeitsproben, Rettungswürfe. Vorteil, Nachteil und Halfling Lucky funktionieren normal; jeder einzelne W20 wird riskant gewürfelt. Kritische Treffer und Patzer erkennt dnd5e wie gewohnt.
+Standardmäßig nur die W20-Proben des dnd5e-Systems (getestet gegen den Code von dnd5e 5.3 und 6.0): Angriffe, Attributs- und Fertigkeitsproben, Rettungswürfe. Vorteil, Nachteil und Halfling Lucky funktionieren normal; jeder einzelne W20 wird riskant gewürfelt. Kritische Treffer und Patzer erkennt dnd5e wie gewohnt.
 
 Wird die Einstellung „Nur W20-Proben“ abgeschaltet, gilt der riskante Würfel für jeden W20, auch `/r 1d20`.
 
