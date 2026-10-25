@@ -3,17 +3,17 @@
     "CountLabel": "{count}× 1 und {count}× 20 (je {chance} %)",
     "ChatBadge": "Riskanter W20",
     "Button": {
-      "Arm": "Riskanter W20 für {name}",
-      "Armed": "Bereit: {name} (Klick bricht ab)",
+      "Enable": "Riskanter W20 für {name}",
+      "Enabled": "Aktiv: {name} (Klick deaktiviert)",
       "Rules": "Gilt für die nächste W20-Probe. Nicht mit Vorteil/Nachteil. Keine Nachwürfe (z. B. Halfling Lucky)."
     },
     "Notify": {
-      "Armed": "Deine nächste W20-Probe würfelst du mit dem riskanten W20 ({count}× 1, {count}× 20).",
-      "Advantage": "Riskanter W20 geht nicht mit Vorteil oder Nachteil. Der Wurf wurde normal gewürfelt, der riskante W20 bleibt bereit.",
+      "Enabled": "Deine nächste W20-Probe würfelst du mit dem riskanten W20 ({count}× 1, {count}× 20).",
+      "Advantage": "Riskanter W20 geht nicht mit Vorteil oder Nachteil. Der Wurf wurde normal gewürfelt, der riskante W20 bleibt aktiv.",
       "RerollsRemoved": "Nachwürfe (z. B. Halfling Lucky) gelten nicht für den riskanten W20."
     },
     "Keybinding": {
-      "Toggle": "Riskanten W20 für den gewählten Spieler scharf schalten / abbrechen"
+      "Toggle": "Riskanten W20 für den gewählten Spieler aktivieren / deaktivieren"
     },
     "Settings": {
       "Count": {

@@ -42,7 +42,7 @@
   cursor: not-allowed;
 }
 
-#risky-die-button.armed {
+#risky-die-button.enabled {
   background: #8b1a1a;
   border-color: #ff6a3d;
   color: #fff;

@@ -4,10 +4,10 @@ import { OPTION_KEY, installPatches, riskyCount } from "./core.mjs";
 const MODULE_ID = "risky-die";
 
 /**
- * The GM arms the risky die for one user by setting this flag on their User document.
+ * The GM enables the risky die for one user by setting this flag on their User document.
  * That user's next eligible d20 roll is risky; afterwards their client clears the flag.
  */
-const ARMED_FLAG = "armed";
+const ENABLED_FLAG = "enabled";
 
 /* -------------------------------------------- */
 /*  Settings                                    */
@@ -68,35 +68,35 @@ function registerKeybindings() {
 /*  State                                       */
 /* -------------------------------------------- */
 
-const isArmed = user => Boolean(user?.getFlag(MODULE_ID, ARMED_FLAG));
+const isEnabled = user => Boolean(user?.getFlag(MODULE_ID, ENABLED_FLAG));
 
 /** The user selected in the GM panel; falls back to the GM. */
 function targetUser() {
   return game.users.get(setting("target")) ?? game.user;
 }
 
-async function arm(user = targetUser()) {
+async function enable(user = targetUser()) {
   if ( !game.user.isGM ) return false;
-  await user.setFlag(MODULE_ID, ARMED_FLAG, true);
+  await user.setFlag(MODULE_ID, ENABLED_FLAG, true);
   return true;
 }
 
-async function disarm(user = targetUser()) {
+async function disable(user = targetUser()) {
   if ( !game.user.isGM && (user !== game.user) ) return;
-  if ( isArmed(user) ) await user.unsetFlag(MODULE_ID, ARMED_FLAG);
+  if ( isEnabled(user) ) await user.unsetFlag(MODULE_ID, ENABLED_FLAG);
 }
 
 async function toggle(user = targetUser()) {
-  if ( isArmed(user) ) return disarm(user);
-  return arm(user);
+  if ( isEnabled(user) ) return disable(user);
+  return enable(user);
 }
 
 function onUpdateUser(user, changes) {
   if ( !foundry.utils.hasProperty(changes, `flags.${MODULE_ID}`)
     && !foundry.utils.hasProperty(changes, `flags.-=${MODULE_ID}`) ) return;
   refreshPanel();
-  if ( (user === game.user) && !game.user.isGM && isArmed(user) ) {
-    ui.notifications.info(game.i18n.format("RISKYDIE.Notify.Armed", { count: clampCount(setting("count")) }));
+  if ( (user === game.user) && !game.user.isGM && isEnabled(user) ) {
+    ui.notifications.info(game.i18n.format("RISKYDIE.Notify.Enabled", { count: clampCount(setting("count")) }));
   }
 }
 
@@ -113,13 +113,13 @@ function isEligible(term) {
 }
 
 function decide() {
-  if ( !isArmed(game.user) ) return null;
+  if ( !isEnabled(game.user) ) return null;
   return clampCount(setting("count"));
 }
 
 function onApplied(roll, { rerollsRemoved }) {
   if ( rerollsRemoved.length ) ui.notifications.info(game.i18n.localize("RISKYDIE.Notify.RerollsRemoved"));
-  disarm(game.user);
+  disable(game.user);
 }
 
 function onBlocked() {
@@ -197,7 +197,7 @@ function refreshSelect(target) {
   select.replaceChildren(...users.map(u => {
     const option = document.createElement("option");
     option.value = u.id;
-    option.textContent = (isArmed(u) ? "⚠ " : "") + u.name + (u.active ? "" : ` (${game.i18n.localize("RISKYDIE.Panel.Offline")})`);
+    option.textContent = (isEnabled(u) ? "⚠ " : "") + u.name + (u.active ? "" : ` (${game.i18n.localize("RISKYDIE.Panel.Offline")})`);
     return option;
   }));
   select.value = target.id;
@@ -209,11 +209,11 @@ function refreshPanel() {
   if ( panel.hidden ) return;
 
   const target = targetUser();
-  const armed = isArmed(target);
+  const enabled = isEnabled(target);
   refreshSelect(target);
 
-  button.classList.toggle("armed", armed);
-  const label = armed ? "RISKYDIE.Button.Armed" : "RISKYDIE.Button.Arm";
+  button.classList.toggle("enabled", enabled);
+  const label = enabled ? "RISKYDIE.Button.Enabled" : "RISKYDIE.Button.Enable";
   button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> <span>${game.i18n.format(label, { name: target.name })}</span>`;
   button.dataset.tooltip = game.i18n.localize("RISKYDIE.Button.Rules");
 
@@ -250,8 +250,8 @@ Hooks.once("init", () => {
   registerKeybindings();
   installPatches({ Roll: foundry.dice.Roll, Die: foundry.dice.terms.Die, isEligible, decide, onApplied, onBlocked });
   game.modules.get(MODULE_ID).api = {
-    arm, disarm, toggle, isArmed, mapFace, faceList,
-    get armed() { return isArmed(game.user); },
+    enable, disable, toggle, isEnabled, mapFace, faceList,
+    get enabled() { return isEnabled(game.user); },
     OPTION_KEY
   };
 });

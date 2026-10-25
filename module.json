@@ -2,7 +2,7 @@
   "id": "risky-die",
   "title": "Risky Die",
   "description": "Players can choose a risky d20 with more ones and more twenties. The count is configurable, and the GM can unlock or lock it.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

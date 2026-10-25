@@ -18,13 +18,13 @@ The GM decides who rolls risky, for example when a player asks for it in rolepla
 
 - Above the player list (bottom left) the GM sees a small panel:
   - a dropdown with the players (online first) and the GM,
-  - the button **"Risky d20 for …"**, which arms the risky die for the selected player,
+  - the button **"Risky d20 for …"**, which enables the risky die for the selected player,
   - a slider for the number of ones and twenties, with the chance of a 1 and a 20.
-- The selected player's next d20 test is risky. The player gets a short notification when it is armed. After the roll it resets automatically. Clicking the button again cancels it.
-- Players who are armed are marked with ⚠ in the dropdown.
+- The selected player's next d20 test is risky. The player gets a short notification when it is enabled. After the roll it resets automatically. Clicking the button again cancels it.
+- Players for whom it is enabled are marked with ⚠ in the dropdown.
 - Select yourself to roll risky as GM, for example for an NPC.
 - A risky roll gets a note in the chat, so the table can see which die was used.
-- An optional GM keybinding arms or cancels for the selected player (Settings → Controls).
+- An optional GM keybinding enables or disables it for the selected player (Settings → Controls).
 
 ### Which rolls
 
@@ -32,7 +32,7 @@ By default only d20 tests of the dnd5e system: attacks, ability checks, skill ch
 
 Two restrictions keep the die from being too strong:
 
-- **No advantage or disadvantage.** A roll with advantage or disadvantage (including Elven Accuracy and `2d20kh`) is rolled normally. The risky d20 stays armed for the next eligible roll, and the player gets a notification.
+- **No advantage or disadvantage.** A roll with advantage or disadvantage (including Elven Accuracy and `2d20kh`) is rolled normally. The risky d20 stays enabled for the next eligible roll, and the player gets a notification.
 - **No rerolls.** Reroll modifiers such as Halfling Lucky (`r1=1`) are removed from a risky d20. A feat like the 2014 Lucky, where the player rolls another d20 by hand, cannot be prevented by the module; the chat note still shows the GM that the roll was risky. The 2024 Lucky grants advantage and is covered by the first rule.
 
 If the "Only d20 tests" setting is turned off, the risky die applies to every d20, including `/r 1d20`.
@@ -45,10 +45,10 @@ A small API is available for macros:
 
 ```js
 const api = game.modules.get("risky-die").api;
-api.arm(game.users.getName("Christopher"));  // GM only: arm a player's next d20 test
-api.disarm(user);
+api.enable(game.users.getName("Christopher"));  // GM only: risky d20 for a player's next d20 test
+api.disable(user);
 api.toggle(user);
-api.isArmed(user);
+api.isEnabled(user);
 api.faceList(3);        // [1, 1, 1, 4, …, 17, 20, 20, 20]
 ```
 
@@ -74,7 +74,7 @@ The dice logic (`scripts/mapping.mjs`) and the patches (`scripts/core.mjs`) can 
 
 ## Known limitations of the prototype
 
-- The armed state is a flag on the player's user, and the player's browser applies it. That is enough for a table among friends; the chat note makes every risky roll visible.
-- Arming is per player (user), not per character. If the GM rolls for a player's character, the GM's own state counts.
+- The enabled state is a flag on the player's user, and the player's browser applies it. That is enough for a table among friends; the chat note makes every risky roll visible.
+- Enabling is per player (user), not per character. If the GM rolls for a player's character, the GM's own state counts.
 - Advantage is detected from the dice modifiers and the dnd5e roll option. Other systems that model advantage differently are not detected.
 - Dice So Nice shows a normal d20 with the mapped result, not custom faces with two 20s.

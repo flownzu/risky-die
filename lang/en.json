@@ -3,17 +3,17 @@
     "CountLabel": "{count}× 1 and {count}× 20 ({chance}% each)",
     "ChatBadge": "Risky d20",
     "Button": {
-      "Arm": "Risky d20 for {name}",
-      "Armed": "Armed: {name} (click to cancel)",
+      "Enable": "Risky d20 for {name}",
+      "Enabled": "Enabled: {name} (click to disable)",
       "Rules": "Applies to the next d20 test. Not with advantage/disadvantage. No rerolls (e.g. Halfling Lucky)."
     },
     "Notify": {
-      "Armed": "Your next d20 test uses the risky d20 ({count}× 1, {count}× 20).",
-      "Advantage": "The risky d20 can't be used with advantage or disadvantage. The roll was made normally, the risky d20 stays armed.",
+      "Enabled": "Your next d20 test uses the risky d20 ({count}× 1, {count}× 20).",
+      "Advantage": "The risky d20 can't be used with advantage or disadvantage. The roll was made normally, the risky d20 stays enabled.",
       "RerollsRemoved": "Rerolls (e.g. Halfling Lucky) don't apply to the risky d20."
     },
     "Keybinding": {
-      "Toggle": "Arm / cancel risky d20 for the selected player"
+      "Toggle": "Enable / disable risky d20 for the selected player"
     },
     "Settings": {
       "Count": {
