@@ -1,0 +1,47 @@
+{
+  "RISKYDIE": {
+    "CountLabel": "{count}× 1 und {count}× 20 (je {chance} %)",
+    "ChatBadge": "Riskanter W20",
+    "Button": {
+      "Ready": "Riskanter W20",
+      "Armed": "Riskant: nächster W20",
+      "Unavailable": "Riskanter W20 gesperrt",
+      "GMLocked": "Riskanter W20: gesperrt",
+      "GMUnlocked": "Riskanter W20: freigegeben",
+      "GMHint": "Klick: Freigabe für die Spieler umschalten. Shift+Klick: selbst riskant würfeln."
+    },
+    "Notify": {
+      "NotAvailable": "Der riskante W20 ist gerade nicht freigegeben.",
+      "Unlocked": "Der GM hat den riskanten W20 freigegeben.",
+      "Locked": "Der GM hat den riskanten W20 wieder gesperrt."
+    },
+    "Keybinding": {
+      "Toggle": "Riskanten W20 scharf schalten / abbrechen"
+    },
+    "Settings": {
+      "Count": {
+        "Name": "Anzahl Einsen und Zwanzigen",
+        "Hint": "Wie viele Seiten des riskanten W20 eine 1 bzw. eine 20 zeigen. Dafür fallen die Nachbarseiten weg: Bei 2 gibt es keine 2 und keine 19, bei 3 zusätzlich keine 3 und keine 18 usw. Der Durchschnitt bleibt 10,5."
+      },
+      "Availability": {
+        "Name": "Verfügbarkeit",
+        "Hint": "Wann Spieler den riskanten W20 wählen dürfen.",
+        "Always": "Immer",
+        "Unlock": "Nur wenn der GM ihn freigibt",
+        "Off": "Nie"
+      },
+      "OnlyD20Tests": {
+        "Name": "Nur W20-Proben",
+        "Hint": "Nur Angriffe, Attributs- und Fertigkeitsproben sowie Rettungswürfe des dnd5e-Systems sind betroffen. Aus: jeder W20, auch in freien Würfen wie /r 1d20."
+      },
+      "Once": {
+        "Name": "Nur für einen Wurf",
+        "Hint": "Nach einem riskanten Wurf wird der Schalter automatisch zurückgesetzt. Aus: bleibt aktiv, bis du ihn abschaltest."
+      },
+      "ShowButton": {
+        "Name": "Schaltfläche anzeigen",
+        "Hint": "Zeigt die Schaltfläche für den riskanten W20 über der Spielerliste."
+      }
+    }
+  }
+}
