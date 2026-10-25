@@ -3,48 +3,35 @@
     "CountLabel": "{count}× 1 und {count}× 20 (je {chance} %)",
     "ChatBadge": "Riskanter W20",
     "Button": {
-      "Ready": "Riskanter W20",
-      "Armed": "Riskant: nächster W20",
-      "Unavailable": "Riskanter W20 gesperrt",
-      "GMLocked": "Riskanter W20: gesperrt",
-      "GMUnlocked": "Riskanter W20: freigegeben",
-      "GMHint": "Klick: Freigabe für die Spieler umschalten. Shift+Klick: selbst riskant würfeln.",
-      "Rules": "Nicht mit Vorteil/Nachteil. Keine Nachwürfe (z. B. Halfling Lucky)."
+      "Arm": "Riskanter W20 für {name}",
+      "Armed": "Bereit: {name} (Klick bricht ab)",
+      "Rules": "Gilt für die nächste W20-Probe. Nicht mit Vorteil/Nachteil. Keine Nachwürfe (z. B. Halfling Lucky)."
     },
     "Notify": {
-      "NotAvailable": "Der riskante W20 ist gerade nicht freigegeben.",
-      "Unlocked": "Der GM hat den riskanten W20 freigegeben.",
-      "Locked": "Der GM hat den riskanten W20 wieder gesperrt.",
+      "Armed": "Deine nächste W20-Probe würfelst du mit dem riskanten W20 ({count}× 1, {count}× 20).",
       "Advantage": "Riskanter W20 geht nicht mit Vorteil oder Nachteil. Der Wurf wurde normal gewürfelt, der riskante W20 bleibt bereit.",
       "RerollsRemoved": "Nachwürfe (z. B. Halfling Lucky) gelten nicht für den riskanten W20."
     },
     "Keybinding": {
-      "Toggle": "Riskanten W20 scharf schalten / abbrechen"
+      "Toggle": "Riskanten W20 für den gewählten Spieler scharf schalten / abbrechen"
     },
     "Settings": {
       "Count": {
         "Name": "Anzahl Einsen und Zwanzigen",
         "Hint": "Wie viele Seiten des riskanten W20 eine 1 bzw. eine 20 zeigen. Dafür fallen die Nachbarseiten weg: Bei 2 gibt es keine 2 und keine 19, bei 3 zusätzlich keine 3 und keine 18 usw. Der Durchschnitt bleibt 10,5."
       },
-      "Availability": {
-        "Name": "Verfügbarkeit",
-        "Hint": "Wann Spieler den riskanten W20 wählen dürfen.",
-        "Always": "Immer",
-        "Unlock": "Nur wenn der GM ihn freigibt",
-        "Off": "Nie"
-      },
       "OnlyD20Tests": {
         "Name": "Nur W20-Proben",
         "Hint": "Nur Angriffe, Attributs- und Fertigkeitsproben sowie Rettungswürfe des dnd5e-Systems sind betroffen. Aus: jeder W20, auch in freien Würfen wie /r 1d20."
       },
-      "Once": {
-        "Name": "Nur für einen Wurf",
-        "Hint": "Nach einem riskanten Wurf wird der Schalter automatisch zurückgesetzt. Aus: bleibt aktiv, bis du ihn abschaltest."
-      },
       "ShowButton": {
         "Name": "Leiste anzeigen",
-        "Hint": "Zeigt die Leiste für den riskanten W20 über der Spielerliste. Als GM stellst du dort auch die Anzahl der Einsen und Zwanzigen ein."
+        "Hint": "Zeigt dem GM die Leiste für den riskanten W20 über der Spielerliste. Spieler sehen sie nie."
       }
+    },
+    "Panel": {
+      "Target": "Für wen",
+      "Offline": "offline"
     }
   }
 }

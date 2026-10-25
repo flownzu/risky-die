@@ -3,8 +3,11 @@ import { OPTION_KEY, installPatches, riskyCount } from "./core.mjs";
 
 const MODULE_ID = "risky-die";
 
-/** Is the risky die armed for this client's next roll? */
-let armed = false;
+/**
+ * The GM arms the risky die for one user by setting this flag on their User document.
+ * That user's next eligible d20 roll is risky; afterwards their client clears the flag.
+ */
+const ARMED_FLAG = "armed";
 
 /* -------------------------------------------- */
 /*  Settings                                    */
@@ -21,52 +24,13 @@ function registerSettings() {
     type: Number,
     range: { min: MIN_COUNT, max: MAX_COUNT, step: 1 },
     default: 2,
-    onChange: () => refreshButton()
-  });
-
-  game.settings.register(MODULE_ID, "availability", {
-    name: "RISKYDIE.Settings.Availability.Name",
-    hint: "RISKYDIE.Settings.Availability.Hint",
-    scope: "world",
-    config: true,
-    type: String,
-    choices: {
-      always: "RISKYDIE.Settings.Availability.Always",
-      unlock: "RISKYDIE.Settings.Availability.Unlock",
-      off: "RISKYDIE.Settings.Availability.Off"
-    },
-    default: "unlock",
-    onChange: () => { if ( !isAvailable() ) disarm(); refreshButton(); }
-  });
-
-  // GM unlock, only relevant when availability = "unlock".
-  game.settings.register(MODULE_ID, "unlocked", {
-    scope: "world",
-    config: false,
-    type: Boolean,
-    default: false,
-    onChange: value => {
-      if ( !value ) disarm();
-      refreshButton();
-      if ( !game.user.isGM && (setting("availability") === "unlock") ) {
-        ui.notifications.info(game.i18n.localize(value ? "RISKYDIE.Notify.Unlocked" : "RISKYDIE.Notify.Locked"));
-      }
-    }
+    onChange: () => refreshPanel()
   });
 
   game.settings.register(MODULE_ID, "onlyD20Tests", {
     name: "RISKYDIE.Settings.OnlyD20Tests.Name",
     hint: "RISKYDIE.Settings.OnlyD20Tests.Hint",
     scope: "world",
-    config: true,
-    type: Boolean,
-    default: true
-  });
-
-  game.settings.register(MODULE_ID, "once", {
-    name: "RISKYDIE.Settings.Once.Name",
-    hint: "RISKYDIE.Settings.Once.Hint",
-    scope: "client",
     config: true,
     type: Boolean,
     default: true
@@ -79,7 +43,15 @@ function registerSettings() {
     config: true,
     type: Boolean,
     default: true,
-    onChange: () => refreshButton()
+    onChange: () => refreshPanel()
+  });
+
+  // The user the GM panel targets, remembered per GM client.
+  game.settings.register(MODULE_ID, "target", {
+    scope: "client",
+    config: false,
+    type: String,
+    default: ""
   });
 }
 
@@ -87,6 +59,7 @@ function registerKeybindings() {
   game.keybindings.register(MODULE_ID, "toggle", {
     name: "RISKYDIE.Keybinding.Toggle",
     editable: [],
+    restricted: true,
     onDown: () => { toggle(); return true; }
   });
 }
@@ -95,37 +68,36 @@ function registerKeybindings() {
 /*  State                                       */
 /* -------------------------------------------- */
 
-function isAvailable() {
-  switch ( setting("availability") ) {
-    case "always": return true;
-    case "unlock": return setting("unlocked");
-    default: return false;
-  }
+const isArmed = user => Boolean(user?.getFlag(MODULE_ID, ARMED_FLAG));
+
+/** The user selected in the GM panel; falls back to the GM. */
+function targetUser() {
+  return game.users.get(setting("target")) ?? game.user;
 }
 
-function arm() {
-  if ( !isAvailable() ) {
-    ui.notifications.warn(game.i18n.localize("RISKYDIE.Notify.NotAvailable"));
-    return false;
-  }
-  armed = true;
-  refreshButton();
+async function arm(user = targetUser()) {
+  if ( !game.user.isGM ) return false;
+  await user.setFlag(MODULE_ID, ARMED_FLAG, true);
   return true;
 }
 
-function disarm() {
-  if ( !armed ) return;
-  armed = false;
-  refreshButton();
+async function disarm(user = targetUser()) {
+  if ( !game.user.isGM && (user !== game.user) ) return;
+  if ( isArmed(user) ) await user.unsetFlag(MODULE_ID, ARMED_FLAG);
 }
 
-function toggle() {
-  return armed ? (disarm(), false) : arm();
+async function toggle(user = targetUser()) {
+  if ( isArmed(user) ) return disarm(user);
+  return arm(user);
 }
 
-async function setUnlocked(value) {
-  if ( !game.user.isGM ) return;
-  await game.settings.set(MODULE_ID, "unlocked", Boolean(value));
+function onUpdateUser(user, changes) {
+  if ( !foundry.utils.hasProperty(changes, `flags.${MODULE_ID}`)
+    && !foundry.utils.hasProperty(changes, `flags.-=${MODULE_ID}`) ) return;
+  refreshPanel();
+  if ( (user === game.user) && !game.user.isGM && isArmed(user) ) {
+    ui.notifications.info(game.i18n.format("RISKYDIE.Notify.Armed", { count: clampCount(setting("count")) }));
+  }
 }
 
 /* -------------------------------------------- */
@@ -141,13 +113,13 @@ function isEligible(term) {
 }
 
 function decide() {
-  if ( !armed || !isAvailable() ) return null;
+  if ( !isArmed(game.user) ) return null;
   return clampCount(setting("count"));
 }
 
 function onApplied(roll, { rerollsRemoved }) {
   if ( rerollsRemoved.length ) ui.notifications.info(game.i18n.localize("RISKYDIE.Notify.RerollsRemoved"));
-  if ( setting("once") ) disarm();
+  disarm(game.user);
 }
 
 function onBlocked() {
@@ -155,11 +127,12 @@ function onBlocked() {
 }
 
 /* -------------------------------------------- */
-/*  Interface                                   */
+/*  Interface (GM only)                         */
 /* -------------------------------------------- */
 
 let panel = null;
 let button = null;
+let select = null;
 let slider = null;
 let countText = null;
 
@@ -168,37 +141,41 @@ function countLabel(count) {
 }
 
 function createPanel() {
+  if ( !game.user.isGM ) return;
   panel = document.createElement("div");
   panel.id = "risky-die-panel";
+
+  // Target row: whose next roll is risky.
+  select = document.createElement("select");
+  select.ariaLabel = game.i18n.localize("RISKYDIE.Panel.Target");
+  select.addEventListener("change", async () => {
+    await game.settings.set(MODULE_ID, "target", select.value);
+    refreshPanel();
+  });
 
   button = document.createElement("button");
   button.type = "button";
   button.id = "risky-die-button";
   button.addEventListener("click", event => {
     event.preventDefault();
-    if ( game.user.isGM && (setting("availability") === "unlock") && !event.shiftKey ) {
-      setUnlocked(!setting("unlocked"));
-    }
-    else toggle();
+    toggle();
   });
 
-  // Count row: GMs get a slider, players only see the current value.
+  // Count row.
   const row = document.createElement("div");
   row.classList.add("risky-die-count");
-  if ( game.user.isGM ) {
-    slider = document.createElement("input");
-    slider.type = "range";
-    slider.min = String(MIN_COUNT);
-    slider.max = String(MAX_COUNT);
-    slider.step = "1";
-    slider.ariaLabel = game.i18n.localize("RISKYDIE.Settings.Count.Name");
-    slider.addEventListener("input", () => updateCountText(Number(slider.value)));
-    slider.addEventListener("change", () => game.settings.set(MODULE_ID, "count", clampCount(slider.value)));
-    row.append(slider);
-  }
+  slider = document.createElement("input");
+  slider.type = "range";
+  slider.min = String(MIN_COUNT);
+  slider.max = String(MAX_COUNT);
+  slider.step = "1";
+  slider.ariaLabel = game.i18n.localize("RISKYDIE.Settings.Count.Name");
+  slider.addEventListener("input", () => updateCountText(Number(slider.value)));
+  slider.addEventListener("change", () => game.settings.set(MODULE_ID, "count", clampCount(slider.value)));
   countText = document.createElement("span");
-  row.append(countText);
-  panel.append(button, row);
+  row.append(slider, countText);
+
+  panel.append(select, button, row);
 
   const players = document.getElementById("players");
   if ( players?.parentElement ) players.parentElement.insertBefore(panel, players);
@@ -206,7 +183,7 @@ function createPanel() {
     panel.classList.add("floating");
     document.body.append(panel);
   }
-  refreshButton();
+  refreshPanel();
 }
 
 function updateCountText(count) {
@@ -214,33 +191,34 @@ function updateCountText(count) {
   countText.dataset.tooltip = faceList(count).join(" · ");
 }
 
-function refreshButton() {
+function refreshSelect(target) {
+  const users = game.users.filter(u => !u.isGM || (u === game.user))
+    .sort((a, b) => (b.active - a.active) || a.name.localeCompare(b.name));
+  select.replaceChildren(...users.map(u => {
+    const option = document.createElement("option");
+    option.value = u.id;
+    option.textContent = (isArmed(u) ? "⚠ " : "") + u.name + (u.active ? "" : ` (${game.i18n.localize("RISKYDIE.Panel.Offline")})`);
+    return option;
+  }));
+  select.value = target.id;
+}
+
+function refreshPanel() {
   if ( !panel ) return;
-  const availability = setting("availability");
-  const hidden = !setting("showButton") || ((availability === "off") && !game.user.isGM);
-  panel.hidden = hidden;
-  if ( hidden ) return;
+  panel.hidden = !setting("showButton");
+  if ( panel.hidden ) return;
 
-  const count = clampCount(setting("count"));
-  const available = isAvailable();
-  const gmUnlockMode = game.user.isGM && (availability === "unlock");
-
-  let label;
-  if ( armed ) label = "RISKYDIE.Button.Armed";
-  else if ( gmUnlockMode ) label = setting("unlocked") ? "RISKYDIE.Button.GMUnlocked" : "RISKYDIE.Button.GMLocked";
-  else if ( available ) label = "RISKYDIE.Button.Ready";
-  else label = "RISKYDIE.Button.Unavailable";
+  const target = targetUser();
+  const armed = isArmed(target);
+  refreshSelect(target);
 
   button.classList.toggle("armed", armed);
-  button.classList.toggle("available", available);
-  button.disabled = !available && !gmUnlockMode;
-  button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> <span>${game.i18n.localize(label)}</span>`;
+  const label = armed ? "RISKYDIE.Button.Armed" : "RISKYDIE.Button.Arm";
+  button.innerHTML = `<i class="fa-solid fa-dice-d20"></i> <span>${game.i18n.format(label, { name: target.name })}</span>`;
+  button.dataset.tooltip = game.i18n.localize("RISKYDIE.Button.Rules");
 
-  const tooltip = [game.i18n.localize("RISKYDIE.Button.Rules")];
-  if ( gmUnlockMode ) tooltip.push(game.i18n.localize("RISKYDIE.Button.GMHint"));
-  button.dataset.tooltip = tooltip.join("<br>");
-
-  if ( slider ) slider.value = String(count);
+  const count = clampCount(setting("count"));
+  slider.value = String(count);
   updateCountText(count);
 }
 
@@ -272,13 +250,15 @@ Hooks.once("init", () => {
   registerKeybindings();
   installPatches({ Roll: foundry.dice.Roll, Die: foundry.dice.terms.Die, isEligible, decide, onApplied, onBlocked });
   game.modules.get(MODULE_ID).api = {
-    arm, disarm, toggle, setUnlocked, mapFace, faceList,
-    get armed() { return armed; },
-    get available() { return isAvailable(); },
+    arm, disarm, toggle, isArmed, mapFace, faceList,
+    get armed() { return isArmed(game.user); },
     OPTION_KEY
   };
 });
 
 Hooks.once("ready", () => createPanel());
+
+Hooks.on("updateUser", onUpdateUser);
+Hooks.on("userConnected", () => refreshPanel());
 
 Hooks.on("renderChatMessageHTML", annotateChatMessage);

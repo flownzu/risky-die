@@ -3,48 +3,35 @@
     "CountLabel": "{count}× 1 and {count}× 20 ({chance}% each)",
     "ChatBadge": "Risky d20",
     "Button": {
-      "Ready": "Risky d20",
-      "Armed": "Risky: next d20",
-      "Unavailable": "Risky d20 locked",
-      "GMLocked": "Risky d20: locked",
-      "GMUnlocked": "Risky d20: unlocked",
-      "GMHint": "Click: toggle access for players. Shift+click: roll risky yourself.",
-      "Rules": "Not with advantage/disadvantage. No rerolls (e.g. Halfling Lucky)."
+      "Arm": "Risky d20 for {name}",
+      "Armed": "Armed: {name} (click to cancel)",
+      "Rules": "Applies to the next d20 test. Not with advantage/disadvantage. No rerolls (e.g. Halfling Lucky)."
     },
     "Notify": {
-      "NotAvailable": "The risky d20 is not unlocked right now.",
-      "Unlocked": "The GM has unlocked the risky d20.",
-      "Locked": "The GM has locked the risky d20 again.",
+      "Armed": "Your next d20 test uses the risky d20 ({count}× 1, {count}× 20).",
       "Advantage": "The risky d20 can't be used with advantage or disadvantage. The roll was made normally, the risky d20 stays armed.",
       "RerollsRemoved": "Rerolls (e.g. Halfling Lucky) don't apply to the risky d20."
     },
     "Keybinding": {
-      "Toggle": "Arm / cancel risky d20"
+      "Toggle": "Arm / cancel risky d20 for the selected player"
     },
     "Settings": {
       "Count": {
         "Name": "Number of ones and twenties",
         "Hint": "How many faces of the risky d20 show a 1 and a 20. The neighbouring faces are removed: with 2 there is no 2 and no 19, with 3 also no 3 and no 18, and so on. The average stays 10.5."
       },
-      "Availability": {
-        "Name": "Availability",
-        "Hint": "When players may choose the risky d20.",
-        "Always": "Always",
-        "Unlock": "Only when the GM unlocks it",
-        "Off": "Never"
-      },
       "OnlyD20Tests": {
         "Name": "Only d20 tests",
         "Hint": "Only attacks, ability checks, skill checks and saving throws of the dnd5e system are affected. Off: every d20, including free rolls like /r 1d20."
       },
-      "Once": {
-        "Name": "Single roll only",
-        "Hint": "The toggle resets automatically after one risky roll. Off: stays active until you turn it off."
-      },
       "ShowButton": {
         "Name": "Show panel",
-        "Hint": "Shows the risky d20 panel above the player list. As GM you can also set the number of ones and twenties there."
+        "Hint": "Shows the GM the risky d20 panel above the player list. Players never see it."
       }
+    },
+    "Panel": {
+      "Target": "For whom",
+      "Offline": "offline"
     }
   }
 }

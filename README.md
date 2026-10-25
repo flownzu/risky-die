@@ -14,16 +14,17 @@ The interface is available in English and German.
 
 ## Usage
 
-- A **"Risky d20"** button appears above the player list (bottom left). One click arms it; the next d20 roll is risky. Afterwards it resets (can be turned off).
-- Below the button the panel shows the current count and the chance of a 1 and a 20. The GM gets a slider there to change the count directly; players see the value only. The same value is also in the module settings.
+The GM decides who rolls risky, for example when a player asks for it in roleplay. Players never see any button.
+
+- Above the player list (bottom left) the GM sees a small panel:
+  - a dropdown with the players (online first) and the GM,
+  - the button **"Risky d20 for …"**, which arms the risky die for the selected player,
+  - a slider for the number of ones and twenties, with the chance of a 1 and a 20.
+- The selected player's next d20 test is risky. The player gets a short notification when it is armed. After the roll it resets automatically. Clicking the button again cancels it.
+- Players who are armed are marked with ⚠ in the dropdown.
+- Select yourself to roll risky as GM, for example for an NPC.
 - A risky roll gets a note in the chat, so the table can see which die was used.
-- An optional keybinding is available (Settings → Controls → "Arm / cancel risky d20").
-
-### Availability (GM setting)
-
-- **Only when the GM unlocks it** (default): the GM toggles access with the same button, for example for a specific scene. Shift+click lets the GM roll risky themselves.
-- **Always**: players can choose it at any time.
-- **Never**: the module is effectively off.
+- An optional GM keybinding arms or cancels for the selected player (Settings → Controls).
 
 ### Which rolls
 
@@ -44,10 +45,10 @@ A small API is available for macros:
 
 ```js
 const api = game.modules.get("risky-die").api;
-api.arm();              // roll the next d20 risky
-api.disarm();
-api.toggle();
-api.setUnlocked(true);  // GM only: set access
+api.arm(game.users.getName("Christopher"));  // GM only: arm a player's next d20 test
+api.disarm(user);
+api.toggle(user);
+api.isArmed(user);
 api.faceList(3);        // [1, 1, 1, 4, …, 17, 20, 20, 20]
 ```
 
@@ -73,7 +74,7 @@ The dice logic (`scripts/mapping.mjs`) and the patches (`scripts/core.mjs`) can 
 
 ## Known limitations of the prototype
 
-- The check whether a player may roll risky runs in the player's browser. That is enough for a table among friends; the chat note makes every risky roll visible.
-- Access applies to all players together, not per character.
+- The armed state is a flag on the player's user, and the player's browser applies it. That is enough for a table among friends; the chat note makes every risky roll visible.
+- Arming is per player (user), not per character. If the GM rolls for a player's character, the GM's own state counts.
 - Advantage is detected from the dice modifiers and the dnd5e roll option. Other systems that model advantage differently are not detected.
 - Dice So Nice shows a normal d20 with the mapped result, not custom faces with two 20s.
