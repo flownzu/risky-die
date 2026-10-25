@@ -1,32 +1,32 @@
 {
   "RISKYDIE": {
     "CountLabel": "{count}× 1 und {count}× 20 (je {chance} %)",
-    "ChatBadge": "Riskanter W20",
+    "ChatBadge": "Riskanter D20",
     "Button": {
-      "Enable": "Riskanter W20 für {name}",
+      "Enable": "Riskanter D20 für {name}",
       "Enabled": "Aktiv: {name} (Klick deaktiviert)",
-      "Rules": "Gilt für die nächste W20-Probe. Nicht mit Vorteil/Nachteil. Keine Nachwürfe (z. B. Halfling Lucky)."
+      "Rules": "Gilt für die nächste D20-Probe. Nicht mit Vorteil/Nachteil. Keine Nachwürfe (z. B. Halfling Lucky)."
     },
     "Notify": {
-      "Enabled": "Deine nächste W20-Probe würfelst du mit dem riskanten W20 ({count}× 1, {count}× 20).",
-      "Advantage": "Riskanter W20 geht nicht mit Vorteil oder Nachteil. Der Wurf wurde normal gewürfelt, der riskante W20 bleibt aktiv.",
-      "RerollsRemoved": "Nachwürfe (z. B. Halfling Lucky) gelten nicht für den riskanten W20."
+      "Enabled": "Deine nächste D20-Probe würfelst du mit dem riskanten D20 ({count}× 1, {count}× 20).",
+      "Advantage": "Riskanter D20 geht nicht mit Vorteil oder Nachteil. Der Wurf wurde normal gewürfelt, der riskante D20 bleibt aktiv.",
+      "RerollsRemoved": "Nachwürfe (z. B. Halfling Lucky) gelten nicht für den riskanten D20."
     },
     "Keybinding": {
-      "Toggle": "Riskanten W20 für den gewählten Spieler aktivieren / deaktivieren"
+      "Toggle": "Riskanten D20 für den gewählten Spieler aktivieren / deaktivieren"
     },
     "Settings": {
       "Count": {
         "Name": "Anzahl Einsen und Zwanzigen",
-        "Hint": "Wie viele Seiten des riskanten W20 eine 1 bzw. eine 20 zeigen. Dafür fallen die Nachbarseiten weg: Bei 2 gibt es keine 2 und keine 19, bei 3 zusätzlich keine 3 und keine 18 usw. Der Durchschnitt bleibt 10,5."
+        "Hint": "Wie viele Seiten des riskanten D20 eine 1 bzw. eine 20 zeigen. Dafür fallen die Nachbarseiten weg: Bei 2 gibt es keine 2 und keine 19, bei 3 zusätzlich keine 3 und keine 18 usw. Der Durchschnitt bleibt 10,5."
       },
       "OnlyD20Tests": {
-        "Name": "Nur W20-Proben",
-        "Hint": "Nur Angriffe, Attributs- und Fertigkeitsproben sowie Rettungswürfe des dnd5e-Systems sind betroffen. Aus: jeder W20, auch in freien Würfen wie /r 1d20."
+        "Name": "Nur D20-Proben",
+        "Hint": "Nur Angriffe, Attributs- und Fertigkeitsproben sowie Rettungswürfe des dnd5e-Systems sind betroffen. Aus: jeder D20, auch in freien Würfen wie /r 1d20."
       },
       "ShowButton": {
         "Name": "Leiste anzeigen",
-        "Hint": "Zeigt dem GM die Leiste für den riskanten W20 über der Spielerliste. Spieler sehen sie nie."
+        "Hint": "Zeigt dem GM die Leiste für den riskanten D20 über der Spielerliste. Spieler sehen sie nie."
       }
     },
     "Panel": {
